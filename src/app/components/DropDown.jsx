@@ -46,8 +46,7 @@ export default function CountryPhoneInput() {
     
     console.log("ye wala ho rha hai bhai ");
     
-    // if (r.ok) router.push(`/login?phone=${encodeURIComponent(phoneNumber)}`);
-    // else alert(r.error || "Failed to send code");
+  
   }
 
 
@@ -62,6 +61,12 @@ export default function CountryPhoneInput() {
           Country
         </label>
         <Select
+        menuPosition="fixed"
+        menuPlacement="auto"
+        menuShouldBlockScroll={false}
+        closeMenuOnScroll={false}
+        maxMenuHeight={320}
+
           options={options}
           value={options.find((o) => o.code === selected.code)}
           onChange={onCountryChange}
