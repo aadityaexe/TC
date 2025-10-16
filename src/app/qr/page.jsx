@@ -159,7 +159,7 @@ useEffect(() => {
 
   // ------- UI -------
   return (
-    <div className={`${inter.className} min-h-screen flex items-start md:items-center justify-center px-6 -mt-6 md:-mt-10 `} >
+    <div className={`${inter.className} min-h-screen flex items-start md:items-center justify-center px-6 -mt-6 md:-mt-10 bg-white p-4`} >
       <div className="w-full flex flex-col items-center pt-16 md:pt-0">
         {/* NOT AUTHORIZED VIEW */}
         {!authorized && (
