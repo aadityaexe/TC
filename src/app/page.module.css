@@ -1,0 +1,13 @@
+.para
+{
+    width: 300px;
+    height: 40px;
+    /* background: black !important; */
+    display: flex;
+   font-size: 1rem;
+   color: rgb(112,117,121);
+   margin-bottom: 3.5rem;
+
+}
+
+ 

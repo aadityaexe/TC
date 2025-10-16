@@ -9,15 +9,26 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "countries-list": "^3.1.1",
+    "country-list-js": "^3.1.8",
+    "dotenv": "^17.2.3",
+    "framer-motion": "^12.23.24",
+    "input": "^1.0.1",
+    "next": "15.5.4",
+    "ngrok": "^5.0.0-beta.2",
     "react": "19.1.0",
+    "react-country-flag": "^3.1.0",
     "react-dom": "19.1.0",
-    "next": "15.5.4"
+    "react-qr-code": "^2.0.18",
+    "react-qrcode-logo": "^4.0.0",
+    "react-select": "^5.10.2",
+    "telegram": "^2.26.22"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
-    "@eslint/eslintrc": "^3"
+    "tailwindcss": "^4"
   }
 }
