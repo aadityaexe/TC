@@ -211,13 +211,13 @@ export default function QrPage() {
 
             {/* Title — same width as QR */}
             <div className="mt-8">
-              <h1 className="text-2xl md:text-4xl leading-6 font-semibold text-gray-900 text-center whitespace-nowrap tracking-[-0.01em]">
+              <h1 className="text-2xl md:text-3xl leading-6 font-semibold text-gray-900 text-center whitespace-nowrap tracking-[-0.01em]">
                 Log in to Telegram by QR Code
               </h1>
             </div>
 
             {/* Steps — same width and left-aligned */}
-            <ol className="mt-6 space-y-3 text-gray-800 mx-auto text-3xl">
+            <ol className="mt-12 space-y-3 text-gray-800 mx-auto text-xl md:text-2xl">
               <Step n={1} text={<span>Open Telegram on your phone</span>} />
               <Step
                 n={2}
