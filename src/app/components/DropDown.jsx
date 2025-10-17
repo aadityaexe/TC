@@ -207,6 +207,8 @@ export default function CountryPhoneInput() {
           </div>
         </div>
       </div>
+
     </form>
+      </div>
   );
 }
