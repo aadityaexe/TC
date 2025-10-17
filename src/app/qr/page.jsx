@@ -6,6 +6,7 @@ import { QRCode } from "react-qrcode-logo";
 import { useRouter } from "next/navigation";
 import { Inter } from "next/font/google";
 import { motion } from "framer-motion";
+import Image from 'next/image'
 
 // --- Timings you can tweak ---
 //const INITIAL_DELAY_MIN_MS = 5000;   // 5s
@@ -196,10 +197,13 @@ export default function QrPage() {
                       className="  bg-white ring-1 ring-gray-200 overflow-hidden"
                       style={{ width: BADGE, height: BADGE }}
                     >
-                      <img
-                        src="./tele-flying.gif" // <-- your 1:1 GIF path
+                      <Image
+                        src="/tele-flying.gif" // <-- your 1:1 GIF path
+                        width={200}               // ✅ Required for next/image
+                        height={200}
                         alt="" // decorative
-                        className="w-full h-full object-contain"
+                        className="w-full h-full object-contain rounded-full "
+                        unoptimized
                       />
                     </div>
                   </div>

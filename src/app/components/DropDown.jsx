@@ -86,17 +86,17 @@ export default function CountryPhoneInput() {
     <form onSubmit={onSubmit} className="flex gap-2">
       <div style={{ width: 320, fontFamily: "sans-serif" }}>
         {/* Country select */}
-        <div style={{ position: "relative", marginBottom: 24 }}>
+        <div className="pt-3" style={{ position: "relative", marginBottom: 24 }}>
           <label
             style={{
               position: "absolute",
-              top: -8,
+              top: 4,
               left: 14,
               background: "white",
               fontSize: 12,
               color: "#777",
               padding: "0 4px",
-              zIndex: 10,
+              zIndex: 999,
             }}
           >
             Country
