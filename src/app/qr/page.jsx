@@ -6,13 +6,12 @@ import { QRCode } from "react-qrcode-logo";
 import { useRouter } from "next/navigation";
 import { Inter } from "next/font/google";
 import { motion } from "framer-motion";
-import Image from 'next/image'
-
+import Image from 'next/image';
+import { img } from "framer-motion/client";
 // --- Timings you can tweak ---
-//const INITIAL_DELAY_MIN_MS = 5000;   // 5s
-//const INITIAL_DELAY_MAX_MS = 10000;  // 10s
+ 
 const POLL_INTERVAL_MS = 5000; // status poll cadence
-
+const QR_SIZE = 256;
 const inter = Inter({ subsets: ["latin"], weight: ["500", "600"] });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -162,8 +161,15 @@ export default function QrPage() {
         {!authorized && (
           <div className="flex flex-col items-center">
             {/* QR — only this square shows loader/refresh overlay */}
-
-            <motion.div
+<Image
+      src="/tele-parma.png"
+      alt="Telegram placeholder"
+      width={QR_SIZE}
+      height={QR_SIZE}
+      className="rounded-xl object-contain"
+      priority
+    />
+            {/* <motion.div
               className="relative"
               style={{ width: COL_WIDTH, height: COL_WIDTH }}
               initial={popped ? false : { scale: 0.85, opacity: 0 }}
@@ -177,19 +183,25 @@ export default function QrPage() {
             >
               {uiReady && qrUrl ? (
                 <>
-                  <QRCode
+                  {/* <QRCode
                     value={qrUrl}
                     size={COL_WIDTH}
-                    // If you're using react-qrcode-logo, keep this high for logo-overlays:
                     ecLevel="H"
-                    // ... your other QR props (eyeRadius, qrStyle, etc.)
-                  />
+                    eyeRadius={[
+                      { outer: 10 , inner: 5 }, // top-left
+                      { outer: 14, inner: 6 }, // top-right
+                      { outer: 14, inner: 6 }, // bottom-left
+                    ]}
+                  /> */
+                  
+                  }
+
 
                   {/* Blue spinner overlay only while refreshing */}
 
                   {/* Center GIF badge (only when not refreshing) */}
 
-                  <div
+                  {/* <div
                     className="pointer-events-none absolute inset-0 flex items-center justify-center"
                     aria-hidden
                   >
@@ -198,20 +210,20 @@ export default function QrPage() {
                       style={{ width: BADGE, height: BADGE }}
                     >
                       <Image
-                        src="/tele-flying.gif" // <-- your 1:1 GIF path
-                        width={200}               // ✅ Required for next/image
-                        height={200}
-                        alt="" // decorative
-                        className="w-full h-full object-contain rounded-full "
-                        unoptimized
-                      />
+                      src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNDAgMjQwJz4KICA8Y2lyY2xlIGN4PScxMjAnIGN5PScxMjAnIHI9JzEyMCcgZmlsbD0nIzMzOTBFQycvPgogIDxwYXRoIGZpbGw9J3doaXRlJyBkPSdNNDcgMTIwbDE0MS01NGM2LTIgMTAgMSA4IDlsLTI0IDExM2MtMiA4LTcgMTAtMTMgNmwtNDAtMjktMTkgMThjLTIgMi00IDMtOCAzbDMtNDEgNzUtNjhjMy0zLTEtNC01LTFsLTkyIDU4LTM5LTEyYy04LTItOC04IDEtMTJ6Jy8+Cjwvc3ZnPg=="
+                      width={200}
+                      height={200}
+                      alt="Telegram"
+                      className="w-full h-full object-contain rounded-full"
+                      unoptimized
+                    />
                     </div>
-                  </div>
-                </>
+                  </div> */}
+                {/* </>
               ) : (
                 <div className="w-full h-full rounded-lg bg-gray-100 animate-pulse" />
-              )}
-            </motion.div>
+              )
+            </motion.div>} */}
 
             {/* Title — same width as QR */}
             <div className="mt-8">
