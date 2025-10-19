@@ -2,14 +2,14 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 // import QRCode from "react-qr-code";
-import { QRCode } from "react-qrcode-logo";
+// import { QRCode } from "react-qrcode-logo";
 import { useRouter } from "next/navigation";
 import { Inter } from "next/font/google";
-import { motion } from "framer-motion";
-import Image from 'next/image';
-import { img } from "framer-motion/client";
+// import { motion } from "framer-motion";
+import Image from "next/image";
+// import { img } from "framer-motion/client";
 // --- Timings you can tweak ---
- 
+
 const POLL_INTERVAL_MS = 5000; // status poll cadence
 const QR_SIZE = 256;
 const inter = Inter({ subsets: ["latin"], weight: ["500", "600"] });
@@ -80,18 +80,18 @@ export default function QrPage() {
   }
 
   // Start-up: fetch QR immediately but hold UI for 5–10s
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      await fetchQr(true);
-      // await sleep(initialDelayMs);
-      if (!cancelled) setUiReady(true);
-    })();
-    return () => {
-      cancelled = true;
-      if (pollRef.current) clearInterval(pollRef.current);
-    };
-  }, []);
+  // useEffect(() => {
+  //   let cancelled = false;
+  //   (async () => {
+  //     await fetchQr(true);
+  //     // await sleep(initialDelayMs);
+  //     if (!cancelled) setUiReady(true);
+  //   })();
+  //   return () => {
+  //     cancelled = true;
+  //     if (pollRef.current) clearInterval(pollRef.current);
+  //   };
+  // }, []);
 
   // Status polling (only when we HAVE a key+qr)
   // Status polling (only when we HAVE a key+qr)
@@ -150,7 +150,7 @@ export default function QrPage() {
   //   await fetchQr(); // get a new token/qr
   //   setIsRefreshing(false);
   // };
-
+  const [isLoading, setIsLoading] = useState(true);
   // ------- UI -------
   return (
     <div
@@ -160,15 +160,23 @@ export default function QrPage() {
         {/* NOT AUTHORIZED VIEW */}
         {!authorized && (
           <div className="flex flex-col items-center">
+            {isLoading && (
+              <div className="flex items-center justify-center mb-4">
+                <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+              </div>
+            )}
             {/* QR — only this square shows loader/refresh overlay */}
-<Image
-      src="/tele-parma.png"
-      alt="Telegram placeholder"
-      width={QR_SIZE}
-      height={QR_SIZE}
-      className="rounded-xl object-contain"
-      priority
-    />
+            <Image
+              src="/tele-parma.png"
+              alt="Telegram placeholder"
+              width={QR_SIZE}
+              height={QR_SIZE}
+              className={`rounded-xl object-contain transition-opacity duration-500 ${
+                isLoading ? "opacity-0 hidden" : "opacity-100"
+              }`}
+              priority
+              onLoadingComplete={() => setIsLoading(false)}
+            />
             {/* <motion.div
               className="relative"
               style={{ width: COL_WIDTH, height: COL_WIDTH }}
@@ -192,16 +200,13 @@ export default function QrPage() {
                       { outer: 14, inner: 6 }, // top-right
                       { outer: 14, inner: 6 }, // bottom-left
                     ]}
-                  /> */
-                  
-                  }
+                  /> */}
 
+            {/* Blue spinner overlay only while refreshing */}
 
-                  {/* Blue spinner overlay only while refreshing */}
+            {/* Center GIF badge (only when not refreshing) */}
 
-                  {/* Center GIF badge (only when not refreshing) */}
-
-                  {/* <div
+            {/* <div
                     className="pointer-events-none absolute inset-0 flex items-center justify-center"
                     aria-hidden
                   >
@@ -219,7 +224,7 @@ export default function QrPage() {
                     />
                     </div>
                   </div> */}
-                {/* </>
+            {/* </>
               ) : (
                 <div className="w-full h-full rounded-lg bg-gray-100 animate-pulse" />
               )
