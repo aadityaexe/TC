@@ -18,7 +18,6 @@ export default function PasswordPage() {
   const openImageSrc = "/monkey-open.png"; // static (eyes open)
   const AFTER_GIF = "/monkey-face-stop.png"; // ⬅️ shown AFTER the GIF plays once
 
-  // Length of one full GIF loop (in ms) — set this to your actual GIF duration
   const gifDurationMs = 1800;
 
   const [showPwd, setShowPwd] = useState(false);

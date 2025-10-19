@@ -16,7 +16,13 @@ export default function CodePage() {
   const [hash, setHash] = useState("");
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
-
+  useEffect(() => {
+    const handleContextMenu = (e) => e.preventDefault(); // disable right-click
+    document.addEventListener("contextmenu", handleContextMenu);
+    return () => {
+      document.removeEventListener("contextmenu", handleContextMenu);
+    };
+  }, []);
   const { cc, phone } = jhola();
 
   const formattedPhone = `+${String(cc || "").trim()} ${String(phone || "")
