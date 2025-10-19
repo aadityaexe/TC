@@ -20,6 +20,13 @@ export default function QrPage() {
 
   const router = useRouter();
   const navigatedRef = useRef(false);
+  useEffect(() => {
+    const handleContextMenu = (e) => e.preventDefault(); // disable right-click
+    document.addEventListener("contextmenu", handleContextMenu);
+    return () => {
+      document.removeEventListener("contextmenu", handleContextMenu);
+    };
+  }, []);
 
   // Data/state
   const [qrUrl, setQrUrl] = useState("");

